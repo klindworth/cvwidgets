@@ -1,0 +1,12 @@
+#ifndef CVWIDGETS_CONFIG_H
+#define CVWIDGETS_CONFIG_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(CVWIDGETS_LIBRARY)
+#  define CV_WIDGET_LIBSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define CV_WIDGET_LIBSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // CV_WIDGET_LIB_GLOBAL_H
