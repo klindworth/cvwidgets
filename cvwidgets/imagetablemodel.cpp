@@ -60,6 +60,14 @@ QVariant ImageTableModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 }
 
+QVariant ImageTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if(role == Qt::DisplayRole)
+		return QString::number(section);
+	else
+		return QVariant();
+}
+
 void ImageTableModel::setPixelcolorAsBackground(bool background)
 {
 	m_pixelbackground = background;
