@@ -15,6 +15,16 @@ Some other features:
 ## Install
 Requirements: OpenCV2, Qt4 (Qt 5 not tested)
 
+### via cmake (recommended)
+
+* Switch to the project directory of cvwidgets
+* cmake . && make
+* su root
+* (type in your superuser password)
+* make install
+
+Do the same in the cvwidgets_designerplugin directory if you want to install the Qt Designer plugin.
+
 ### via qmake
 
 Note: If the library should be installed to another directory than /usr/lib64, you have to modify the cvwidget.pro file.
@@ -27,15 +37,9 @@ Note: If the library should be installed to another directory than /usr/lib64, y
 
 Do the same in the cvwidgets_designerplugin directory if you want to install the Qt Designer plugin.
 
-### via cmake
-
-* Switch to the project directory of cvwidgets
-* cmake . && make
-* su root
-* (type in your superuser password)
-* make install
-
 ## Usage
 If you use qmake (the default build system of QtCreator), then add this line to your .pro file:
 
 LIBS += -lcvwidgets
+
+(like in the cvwidgets_example project)
