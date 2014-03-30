@@ -36,9 +36,9 @@ cv::Mat valueScaledImage(const cv::Mat& image)
 
 	cv::Mat result;
 	if(image.channels() == 1)
-		image.convertTo(result, CV_8UC1, scale, -dmin);
+		image.convertTo(result, CV_8UC1, scale, -dmin*scale);
 	else if(image.channels() == 3)
-		image.convertTo(result, CV_8UC3, scale, -dmin);
+		image.convertTo(result, CV_8UC3, scale, -dmin*scale);
 
 	return result;
 }
