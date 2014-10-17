@@ -1,8 +1,7 @@
  
 cmake_minimum_required(VERSION 2.8)
 
-set(PROJECT cvwidgets)
-project(${PROJECT})
+project(cvwidgets)
 
 find_package(Qt4 REQUIRED QtCore QtGui)
 find_package(OpenCV REQUIRED)
@@ -18,38 +17,46 @@ set(SOURCES
     imagetablemodel.cpp
     cvmatprovider.cpp
 )
-set(HEADERS
+set(QTHEADERS
     cvimageviewer.h
     cvsimpleviewer.h
     genericimageviewer.h
     simpleimageviewer.h
     infodialog.h
     imagetablemodel.h
+)
+
+set(HEADERS
     abstractimageprovider.h
     cvmatprovider.h
     cvwidgets_config.h
 )
+
 set(FORMS
     infodialog.ui
 )
 
-qt4_wrap_cpp(HEADERS_MOC ${HEADERS})
+qt4_wrap_cpp(HEADERS_MOC ${QTHEADERS})
 qt4_wrap_ui(FORMS_HEADERS ${FORMS})
 qt4_add_resources(RESOURCES_RCC ${RESOURCES})
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(${QT_DEFINITIONS})
 add_definitions(-DQDESIGNER_EXPORT_WIDGETS)
+add_definitions(-DCVWIDGETS_LIBRARY)
 
-add_library(${PROJECT} SHARED
+add_library(${PROJECT_NAME} SHARED
+    ${QTHEADERS}
     ${SOURCES}
     ${HEADERS_MOC}
     ${FORMS_HEADERS}
     ${RESOURCES_RCC}
 )
-target_link_libraries(${PROJECT}
+target_link_libraries(${PROJECT_NAME}
     ${QT_LIBRARIES} ${OpenCV_LIBS}
 )
 
-install(TARGETS ${PROJECT} DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES ${HEADERS} ${QTHEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")

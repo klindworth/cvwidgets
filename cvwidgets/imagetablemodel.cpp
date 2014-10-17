@@ -60,7 +60,7 @@ QVariant ImageTableModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 }
 
-QVariant ImageTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ImageTableModel::headerData(int section, Qt::Orientation, int role) const
 {
 	if(role == Qt::DisplayRole)
 		return QString::number(section);

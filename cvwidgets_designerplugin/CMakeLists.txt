@@ -38,9 +38,11 @@ add_library(${PROJECT} SHARED
     ${SOURCES}
     ${HEADERS_MOC}
 )
-target_link_libraries(${PROJECT} ${QT_LIBRARIES} cvwidgets)
+target_link_libraries(${PROJECT} ${QT_LIBRARIES} ${OpenCV_LIBS} cvwidgets)
 
 # Install the library in QtDesigner plugin directory
 install(TARGETS ${PROJECT}
     DESTINATION ${QT_PLUGINS_DIR}/designer
 )
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
