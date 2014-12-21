@@ -47,6 +47,7 @@ add_definitions(-DCVWIDGETS_LIBRARY)
 
 add_library(${PROJECT_NAME} SHARED
     ${QTHEADERS}
+    ${HEADERS}
     ${SOURCES}
     ${HEADERS_MOC}
     ${FORMS_HEADERS}
