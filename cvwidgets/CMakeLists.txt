@@ -1,12 +1,18 @@
  
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 project(cvwidgets)
 
-find_package(Qt4 REQUIRED QtCore QtGui)
+#find_package(Qt5 REQUIRED QtCore QtGui QtWidgets)
+find_package(Qt5Widgets)
 find_package(OpenCV REQUIRED)
-include(${QT_USE_FILE})
+#include(${QT_USE_FILE})
 include(GNUInstallDirs)
+
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(SOURCES
     cvimageviewer.cpp
@@ -17,16 +23,13 @@ set(SOURCES
     imagetablemodel.cpp
     cvmatprovider.cpp
 )
-set(QTHEADERS
+set(HEADERS
     cvimageviewer.h
     cvsimpleviewer.h
     genericimageviewer.h
     simpleimageviewer.h
     infodialog.h
     imagetablemodel.h
-)
-
-set(HEADERS
     abstractimageprovider.h
     cvmatprovider.h
     cvwidgets_config.h
@@ -36,9 +39,7 @@ set(FORMS
     infodialog.ui
 )
 
-qt4_wrap_cpp(HEADERS_MOC ${QTHEADERS})
-qt4_wrap_ui(FORMS_HEADERS ${FORMS})
-qt4_add_resources(RESOURCES_RCC ${RESOURCES})
+#qt4_wrap_ui(FORMS_HEADERS ${FORMS})
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(${QT_DEFINITIONS})
@@ -46,15 +47,12 @@ add_definitions(-DQDESIGNER_EXPORT_WIDGETS)
 add_definitions(-DCVWIDGETS_LIBRARY)
 
 add_library(${PROJECT_NAME} SHARED
-    ${QTHEADERS}
     ${HEADERS}
     ${SOURCES}
-    ${HEADERS_MOC}
     ${FORMS_HEADERS}
-    ${RESOURCES_RCC}
 )
 target_link_libraries(${PROJECT_NAME}
-    ${QT_LIBRARIES} ${OpenCV_LIBS}
+    Qt5::Widgets ${OpenCV_LIBS}
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
