@@ -59,3 +59,18 @@ install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${HEADERS} ${QTHEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+
+enable_testing()
+set(TESTSOURCES
+    cvmatprovider.cpp
+    cvmatprovider_tests.cpp
+)
+set(TESTHEADERS
+    cvmatprovider.h
+)
+
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+add_executable(${PROJECT_NAME}_tests ${TESTHEADERS} ${TESTSOURCES})
+add_test(NAME test COMMAND ${PROJECT_NAME}_tests)
+target_link_libraries(${PROJECT_NAME}_tests Qt5::Widgets ${OpenCV_LIBS} ${GTEST_BOTH_LIBRARIES})
