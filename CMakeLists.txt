@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 
 option(BUILD_PLUGIN "Build QtDesigner Plugin" ON)
 
-add_subdirectory(cvwidgets)
+add_subdirectory(library)
 if(BUILD_PLUGIN)
-    add_subdirectory(cvwidgets_designerplugin)
+    add_subdirectory(designerplugin)
 endif()
 
-add_subdirectory(cvwidgets_example)
+add_subdirectory(example)

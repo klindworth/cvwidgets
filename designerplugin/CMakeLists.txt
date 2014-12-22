@@ -40,7 +40,6 @@ add_library(${PROJECT} SHARED
 target_link_libraries(${PROJECT} Qt5::Widgets Qt5::Designer ${OpenCV_LIBS} cvwidgets)
 
 set(PLUGIN_DIR ${_qt5Designer_install_prefix}/plugins/designer)
-message(${PLUGIN_DIR})
 
 # Install the library in QtDesigner plugin directory
 install(TARGETS ${PROJECT}
