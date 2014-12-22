@@ -11,6 +11,8 @@ class CVWidgetsSet: public QObject, public QDesignerCustomWidgetCollectionInterf
 	Q_OBJECT
 	Q_INTERFACES(QDesignerCustomWidgetCollectionInterface)
 
+	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QDesignerCustomWidgetCollectionInterface" FILE "")
+
 public:
 	CVWidgetsSet(QObject *parent = 0);
 

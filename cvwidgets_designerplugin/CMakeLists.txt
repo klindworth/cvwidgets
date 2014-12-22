@@ -1,13 +1,13 @@
  
 cmake_minimum_required(VERSION 2.8)
 
-set(PROJECT cvimageviewerplugin)
+set(PROJECT cvwidgets_designerplugin)
 project(${PROJECT})
 
-find_package(Qt4 REQUIRED QtCore QtGui)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Designer REQUIRED)
 find_package(OpenCV REQUIRED)
 set(QT_USE_QTDESIGNER TRUE)
-include(${QT_USE_FILE})
 
 # Needed to compile against ui and moc generated files
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -25,8 +25,6 @@ set(HEADERS
 )
 
 
-qt4_wrap_cpp(HEADERS_MOC ${HEADERS})
-
 # Here too, I'm not sure every define is necessary
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(-DQT_PLUGIN)
@@ -38,11 +36,14 @@ add_library(${PROJECT} SHARED
     ${SOURCES}
     ${HEADERS_MOC}
 )
-target_link_libraries(${PROJECT} ${QT_LIBRARIES} ${OpenCV_LIBS} cvwidgets)
+target_link_libraries(${PROJECT} Qt5::Widgets Qt5::Designer ${OpenCV_LIBS} cvwidgets)
+
+set(PLUGIN_DIR ${_qt5Designer_install_prefix}/plugins/designer)
+message(${PLUGIN_DIR})
 
 # Install the library in QtDesigner plugin directory
 install(TARGETS ${PROJECT}
-    DESTINATION ${QT_PLUGINS_DIR}/designer
+    DESTINATION ${PLUGIN_DIR}
 )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
