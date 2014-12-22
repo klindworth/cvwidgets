@@ -22,14 +22,18 @@ Requirements: OpenCV2, Qt5 (there's a Qt4 branch available)
 * make install
 
 ## Usage
+A project example is given in the subfolder example
+
 ### via qmake
 If you use qmake (the default build system of QtCreator), then add this line to your .pro file:
 
-'''LIBS += -lcvwidgets'''
+`LIBS += -lcvwidgets`
 
 (like in the example/cvwidgets_example.pro file)
 
 ### via cmake
 Add to your CMakeLists.txt
 
-'''target_link_libraries(your_project_name cvwidgets)'''
+`target_link_libraries(your_project_name cvwidgets)`
+
+(like in the example/CMakeLists.txt)
