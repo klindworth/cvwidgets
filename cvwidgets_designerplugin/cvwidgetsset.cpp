@@ -15,3 +15,4 @@ QList<QDesignerCustomWidgetInterface*> CVWidgetsSet::customWidgets() const
 }
 
 //Q_EXPORT_PLUGIN2(cvwidgets_designerplugin, CVWidgetsSet)
+//Q_EXPORT_PLUGIN(cvwidgets_designerplugin)

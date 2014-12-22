@@ -8,6 +8,7 @@ find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Designer REQUIRED)
 find_package(OpenCV REQUIRED)
 set(QT_USE_QTDESIGNER TRUE)
+set(CMAKE_AUTOMOC ON)
 
 # Needed to compile against ui and moc generated files
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
