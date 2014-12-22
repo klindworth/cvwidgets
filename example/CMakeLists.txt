@@ -5,7 +5,6 @@ project(cvwidgets_example)
 
 find_package(Qt5Widgets)
 find_package(OpenCV REQUIRED)
-#include(${QT_USE_FILE})
 
 set(SOURCES
     main.cpp

@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.0)
 
 project(cvwidgets)
 
-option(BUILD_UNITTESTS "Builds the gtest unittests" OFF)
-
 find_package(Qt5Widgets)
 find_package(OpenCV REQUIRED)
 include(GNUInstallDirs)

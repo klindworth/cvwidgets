@@ -10,9 +10,6 @@ find_package(OpenCV REQUIRED)
 set(QT_USE_QTDESIGNER TRUE)
 set(CMAKE_AUTOMOC ON)
 
-# Needed to compile against ui and moc generated files
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
 set(SOURCES
     cvimageviewerplugin.cpp
     cvsimpleviewerplugin.cpp
@@ -26,7 +23,7 @@ set(HEADERS
 )
 
 
-# Here too, I'm not sure every define is necessary
+#I'm not sure every define is necessary
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(-DQT_PLUGIN)
 add_definitions(-DQT_NO_DEBUG)
