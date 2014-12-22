@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 3.0)
 
 project(cvwidgets)
 
-#find_package(Qt5 REQUIRED QtCore QtGui QtWidgets)
+option(BUILD_UNITTESTS "Builds the gtest unittests" OFF)
+
 find_package(Qt5Widgets)
 find_package(OpenCV REQUIRED)
-#include(${QT_USE_FILE})
 include(GNUInstallDirs)
 
 
@@ -39,8 +39,6 @@ set(FORMS
     infodialog.ui
 )
 
-#qt4_wrap_ui(FORMS_HEADERS ${FORMS})
-
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(${QT_DEFINITIONS})
 add_definitions(-DQDESIGNER_EXPORT_WIDGETS)
@@ -60,17 +58,20 @@ install(FILES ${HEADERS} ${QTHEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
-enable_testing()
-set(TESTSOURCES
-    cvmatprovider.cpp
-    cvmatprovider_tests.cpp
-)
-set(TESTHEADERS
-    cvmatprovider.h
-)
 
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
-add_executable(${PROJECT_NAME}_tests ${TESTHEADERS} ${TESTSOURCES})
-add_test(NAME test COMMAND ${PROJECT_NAME}_tests)
-target_link_libraries(${PROJECT_NAME}_tests Qt5::Widgets ${OpenCV_LIBS} ${GTEST_BOTH_LIBRARIES})
+
+find_package(GTest)
+if(GTEST_FOUND)
+    enable_testing()
+    set(TESTSOURCES
+        cvmatprovider.cpp
+        cvmatprovider_tests.cpp
+    )
+    set(TESTHEADERS
+        cvmatprovider.h
+    )
+    include_directories(${GTEST_INCLUDE_DIRS})
+    add_executable(${PROJECT_NAME}_tests ${TESTHEADERS} ${TESTSOURCES})
+    add_test(NAME test COMMAND ${PROJECT_NAME}_tests)
+    target_link_libraries(${PROJECT_NAME}_tests Qt5::Widgets ${OpenCV_LIBS} ${GTEST_BOTH_LIBRARIES})
+endif()
