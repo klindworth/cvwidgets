@@ -13,13 +13,13 @@ int main(int argc, char *argv[])
 	for(int i = 0; i < 25; ++i)
 	{
 		for(int j = 0; j < 25; ++j)
-			test.at<double>(i,j) = -3.25f;
+			test.at<double>(i,j) = 4.55f;
 	}
 
 	for(int i = 25; i < 50; ++i)
 	{
 		for(int j = 25; j < 50; ++j)
-			test.at<double>(i,j) = 4.55f;
+			test.at<double>(i,j) = -3.25f;
 	}
 
 	//create a CVImageViewer instance, set as image the previously created cv::Mat and show the widget

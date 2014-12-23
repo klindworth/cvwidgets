@@ -70,7 +70,7 @@ QVariant ImageTableModel::headerData(int section, Qt::Orientation, int role) con
 
 void ImageTableModel::setPixelcolorAsBackground(bool background)
 {
+	beginResetModel();
 	m_pixelbackground = background;
-	//FIXME alternative?
-	//reset();
+	endResetModel();
 }
