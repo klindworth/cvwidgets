@@ -4,8 +4,14 @@ cmake_minimum_required(VERSION 3.0)
 project(cvwidgets)
 
 find_package(Qt5Widgets)
-find_package(OpenCV REQUIRED)
-include(GNUInstallDirs)
+find_package(OpenCV REQUIRED core imgproc highgui)
+find_package(Boost REQUIRED filesystem system)
+find_package(OpenMP)
+option(BUILD_HDF5_SUPPORT "Build HDF5 Support" ON)
+
+if(BUILD_HDF5_SUPPORT)
+    find_package(HDF5)
+endif()
 
 
 set(CMAKE_AUTOMOC ON)
@@ -37,6 +43,20 @@ set(FORMS
     infodialog.ui
 )
 
+if(BUILD_HDF5_SUPPORT)
+    set(SOURCES
+        ${SOURCES}
+        hdf5internals.cpp
+        hdf5wrapper.cpp
+    )
+
+    set(HEADERS
+        ${HEADERS}
+        hdf5internals.h
+        hdf5wrapper.h
+    )
+endif()
+
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(${QT_DEFINITIONS})
 add_definitions(-DQDESIGNER_EXPORT_WIDGETS)
@@ -48,7 +68,7 @@ add_library(${PROJECT_NAME} SHARED
     ${FORMS_HEADERS}
 )
 target_link_libraries(${PROJECT_NAME}
-    Qt5::Widgets ${OpenCV_LIBS}
+    Qt5::Widgets ${OpenCV_LIBS} ${HDF5_LIBRARIES} ${Boost_LIBRARIES}
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
@@ -68,8 +88,11 @@ if(GTEST_FOUND)
     set(TESTHEADERS
         cvmatprovider.h
     )
+    if(BUILD_HDF5_SUPPORT)
+        set(TESTSOURCES ${TESTSOURCES} tests.cpp hdf5internals.cpp hdf5wrapper.cpp)
+    endif()
     include_directories(${GTEST_INCLUDE_DIRS})
     add_executable(${PROJECT_NAME}_tests ${TESTHEADERS} ${TESTSOURCES})
     add_test(NAME test COMMAND ${PROJECT_NAME}_tests)
-    target_link_libraries(${PROJECT_NAME}_tests Qt5::Widgets ${OpenCV_LIBS} ${GTEST_BOTH_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME}_tests Qt5::Widgets ${OpenCV_LIBS} ${GTEST_BOTH_LIBRARIES} ${HDF5_LIBRARIES} ${Boost_LIBRARIES})
 endif()
