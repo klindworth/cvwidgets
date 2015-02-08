@@ -14,7 +14,7 @@ add_executable(${PROJECT_NAME}
     ${SOURCES}
 )
 target_link_libraries(${PROJECT_NAME}
-    Qt5::Widgets ${OpenCV_LIBS} cvwidgets
+    Qt5::Widgets ${OpenCV_LIBS} cvio
 )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")

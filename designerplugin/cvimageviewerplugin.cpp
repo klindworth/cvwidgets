@@ -66,7 +66,7 @@ QString CVImageViewerPlugin::domXml() const
 
 QString CVImageViewerPlugin::includeFile() const
 {
-	return QLatin1String("cvimageviewer.h");
+	return QLatin1String("cvio/cvimageviewer.h");
 }
 //if QT_VERSION < 0x050000
 //Q_EXPORT_PLUGIN2(cvimageviewerplugin, CVImageViewerPlugin)

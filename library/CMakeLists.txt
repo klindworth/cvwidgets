@@ -1,7 +1,7 @@
  
 cmake_minimum_required(VERSION 3.0)
 
-project(cvwidgets)
+project(cvio)
 
 find_package(Qt5Widgets)
 find_package(OpenCV REQUIRED core imgproc highgui)
@@ -10,7 +10,7 @@ find_package(OpenMP)
 option(BUILD_HDF5_SUPPORT "Build HDF5 Support" ON)
 
 if(BUILD_HDF5_SUPPORT)
-    find_package(HDF5)
+    find_package(HDF5 REQUIRED)
 endif()
 
 

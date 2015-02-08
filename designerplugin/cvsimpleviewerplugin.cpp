@@ -66,7 +66,7 @@ QString CVSimpleViewerPlugin::domXml() const
 
 QString CVSimpleViewerPlugin::includeFile() const
 {
-	return QLatin1String("cvsimpleviewer.h");
+	return QLatin1String("cvio/cvsimpleviewer.h");
 }
 //if QT_VERSION < 0x050000
 //Q_EXPORT_PLUGIN2(cvsimpleviewerplugin, CVSimpleViewerPlugin)

@@ -34,7 +34,7 @@ add_library(${PROJECT} SHARED
     ${SOURCES}
     ${HEADERS_MOC}
 )
-target_link_libraries(${PROJECT} Qt5::Widgets Qt5::Designer ${OpenCV_LIBS} cvwidgets)
+target_link_libraries(${PROJECT} Qt5::Widgets Qt5::Designer ${OpenCV_LIBS} cvio)
 
 set(PLUGIN_DIR ${_qt5Designer_install_prefix}/plugins/designer)
 
