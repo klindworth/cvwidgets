@@ -49,6 +49,7 @@ public:
 	QString valueInfoString(const QPoint& qpt) const;
 	QString minmax() const;
 	QString typeString() const;
+	void saveOriginal() const;
 
 	/**
 	 * @brief createRGBMat Creates a RGB representation of a cv::Mat

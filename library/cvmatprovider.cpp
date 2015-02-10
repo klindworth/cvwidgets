@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <QFileDialog>
+
 cv::Mat valueScaledImage(const cv::Mat& image)
 {
 	double dmin, dmax;
@@ -157,4 +159,13 @@ QString CVMatProvider::valueInfoString(const QPoint& qpt) const
 		}
 	}
 	return valuetext;
+}
+
+void CVMatProvider::saveOriginal() const
+{
+	QString path = QFileDialog::getSaveFileName();
+	if(!path.isEmpty())
+	{
+
+	}
 }

@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <opencv2/core/core.hpp>
 
+//prepend cvio/ to the includes outside of this project. During compilation of the whole project, they aren't there yet, because they will be installed there (a step later)
 #include <cvimageviewer.h>
 #include <cvsimpleviewer.h>
 

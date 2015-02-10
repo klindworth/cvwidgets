@@ -109,6 +109,7 @@ signals:
 	void zoomstepChanged(int step);
 
 public slots:
+	void saveOriginal();
 	void saveImage();
 	void setScaling(float scaling);
 	void setZoomstep(int step);

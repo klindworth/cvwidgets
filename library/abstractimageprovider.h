@@ -54,6 +54,7 @@ public:
 	 */
 	virtual QString typeString() const = 0;
 
+	virtual void saveOriginal() const = 0;
 };
 
 #endif // ABSTRACTIMAGEPROVIDER_H
