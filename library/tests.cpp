@@ -44,13 +44,21 @@ TEST(CvIoHDF5, Attributes)
 
 	cvio::hdf5file hfile(filename);
 	cvio::hdf5dataset hdataset(hfile, "neuer/test/b");
-	cvio::hdf5attribute::write(hdataset, "timestamp", 500, true);
-	cvio::hdf5attribute::write(hdataset, "debugname", std::string("tester"), true);
+	cvio::hdf5attribute_impl::write(hdataset, "timestamp", 500, true);
+	cvio::hdf5attribute_impl::write(hdataset, "debugname", std::string("tester"), true);
 
-	ASSERT_EQ("tester", cvio::hdf5attribute::read<std::string>(hdataset, "debugname"));
-	ASSERT_EQ(500, cvio::hdf5attribute::read<int>(hdataset, "timestamp"));
+	ASSERT_EQ("tester", cvio::hdf5attribute_impl::read<std::string>(hdataset, "debugname"));
+	ASSERT_EQ(500, cvio::hdf5attribute_impl::read<int>(hdataset, "timestamp"));
 
-	ASSERT_EQ(2, cvio::hdf5attribute::list_attributes(hdataset).size());
+	ASSERT_EQ(2, cvio::hdf5attribute_impl::list_attributes(hdataset).size());
+
+	cvio::hdf5attribute attr(hdataset, "timestamp");
+	ASSERT_EQ(500, attr.read<int>());
+	ASSERT_EQ("500", attr.read_as_string());
+
+	cvio::hdf5attribute attr2(hdataset, "debugname");
+	ASSERT_EQ("tester", attr2.read<std::string>());
+	ASSERT_EQ("tester", attr2.read_as_string());
 
 	std::vector<std::string> groups = hfile.subgroups("neuer");
 	ASSERT_EQ(1, groups.size());

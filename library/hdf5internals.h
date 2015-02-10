@@ -58,7 +58,7 @@ private:
 	bool _own_type_id;
 };
 
-namespace hdf5attribute
+namespace hdf5attribute_impl
 {
 
 	template<typename T>
@@ -98,22 +98,6 @@ namespace hdf5attribute
 	std::string compare_and_read_scalar_attribute(hid_t attribute_id, hid_t type_id);
 
 	template<typename T>
-	T read(hdf5dataset& hdataset, const std::string& name)
-	{
-		hid_t attribute_id = H5Aopen(hdataset.handle(), name.c_str(), H5P_DEFAULT);
-		if(attribute_id < 0)
-			throw std::runtime_error("Failed to open attribute (" + name + ") in dataset (" + "not available" + ") file (" + "not available" + ")");
-
-		hid_t type_id = H5Aget_type(attribute_id);
-
-		T result = compare_and_read_scalar_attribute<T>(attribute_id, type_id);
-
-		H5Aclose(attribute_id);
-		H5Tclose(type_id);
-		return result;
-	}
-
-	template<typename T>
 	const T* get_buffer(const T& val) { return &val; }
 	const char* get_buffer(const std::string& val);
 
@@ -129,6 +113,39 @@ namespace hdf5attribute
 	}
 
 	std::vector<std::string> list_attributes(hdf5dataset& hdataset);
+
+	std::string type_to_string(hid_t d);
+}
+
+class hdf5attribute
+{
+public:
+	hdf5attribute(hdf5dataset& hdataset, const std::string& name);
+	std::string read_as_string();
+	~hdf5attribute();
+
+	hid_t handle() const { return _attribute_id; }
+	hid_t type() const { return _type_id; }
+	std::string type_as_string() const { return hdf5attribute_impl::type_to_string(type()); }
+
+	template<typename T>
+	T read()
+	{
+		return hdf5attribute_impl::compare_and_read_scalar_attribute<T>(_attribute_id, _type_id);
+	}
+
+private:
+	hid_t _attribute_id;
+	hid_t _type_id;
+};
+
+namespace hdf5attribute_impl {
+	template<typename T>
+	T read(hdf5dataset& hdataset, const std::string& name)
+	{
+		hdf5attribute attribute(hdataset, name);
+		return attribute.read<T>();
+	}
 }
 
 

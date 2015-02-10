@@ -8,12 +8,35 @@
 
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace cvio
 {
 
-namespace hdf5attribute
+namespace hdf5attribute_impl
 {
+	std::string type_to_string(hid_t d)
+	{
+		if(H5Tequal(d, H5T_NATIVE_FLOAT))
+			return "float";
+		else if(H5Tequal(d, H5T_NATIVE_DOUBLE))
+			return "double";
+		else if(H5Tequal(d, H5T_NATIVE_INT32))
+			return "int";
+		else if(H5Tequal(d, H5T_NATIVE_INT16))
+			return "short";
+		else if(H5Tequal(d, H5T_NATIVE_UINT16))
+			return "unsigned short";
+		else if(H5Tequal(d, H5T_NATIVE_UCHAR))
+			return "unsigned char";
+		else if(H5Tequal(d, H5T_NATIVE_CHAR))
+			return "char";
+		else if(H5Tget_class(d) == H5T_STRING)
+			return "string";
+		else
+			throw std::runtime_error("unsupported type");
+	}
+
 	void write_internal(hdf5dataset& hdataset, const std::string& name, hid_t type_id, const void* buffer, bool overwrite)
 	{
 		bool exists = H5Aexists(hdataset.handle(), name.c_str());
@@ -101,6 +124,50 @@ namespace hdf5attribute
 
 		return result;
 	}
+}
+
+hdf5attribute::hdf5attribute(hdf5dataset& hdataset, const std::string& name)
+{
+	_attribute_id = H5Aopen(hdataset.handle(), name.c_str(), H5P_DEFAULT);
+	if(_attribute_id < 0)
+		throw std::runtime_error("Failed to open attribute (" + name + ") in dataset (" + "not available" + ") file (" + "not available" + ")");
+
+	_type_id = H5Aget_type(_attribute_id);
+}
+
+hdf5attribute::~hdf5attribute()
+{
+	if(_attribute_id >= 0)
+		H5Aclose(_attribute_id);
+	if(_type_id >= 0)
+		H5Tclose(_type_id);
+}
+
+
+std::string hdf5attribute::read_as_string()
+{
+	std::string result;
+	if(H5Tequal(_type_id, H5T_NATIVE_INT16))
+		result = boost::lexical_cast<std::string>(read<short>());
+	else if(H5Tequal(_type_id, H5T_NATIVE_INT32))
+		result = boost::lexical_cast<std::string>(read<int>());
+	else if(H5Tequal(_type_id, H5T_NATIVE_UINT32))
+		result = boost::lexical_cast<std::string>(read<unsigned int>());
+	else if(H5Tequal(_type_id, H5T_NATIVE_UINT16))
+		result = boost::lexical_cast<std::string>(read<unsigned short>());
+	else if(H5Tequal(_type_id, H5T_NATIVE_UINT8))
+		result = boost::lexical_cast<std::string>(read<unsigned char>());
+	else if(H5Tequal(_type_id, H5T_NATIVE_INT8))
+		result = boost::lexical_cast<std::string>(read<char>());
+	else if(H5Tequal(_type_id, H5T_NATIVE_FLOAT))
+		result = boost::lexical_cast<std::string>(read<float>());
+	else if(H5Tequal(_type_id, H5T_NATIVE_DOUBLE))
+		result = boost::lexical_cast<std::string>(read<double>());
+	else if(H5Tget_class(_type_id) == H5T_STRING)
+		result = read<std::string>();
+	else
+		throw std::runtime_error("unknown type");
+	return result;
 }
 
 hdf5dataset::hdf5dataset(hdf5file& hfile, const std::string& pname) : _hfile(hfile), _name(pname)
