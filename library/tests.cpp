@@ -50,6 +50,8 @@ TEST(CvIoHDF5, Attributes)
 	ASSERT_EQ("tester", cvio::hdf5attribute::read<std::string>(hdataset, "debugname"));
 	ASSERT_EQ(500, cvio::hdf5attribute::read<int>(hdataset, "timestamp"));
 
+	ASSERT_EQ(2, cvio::hdf5attribute::list_attributes(hdataset).size());
+
 	std::vector<std::string> groups = hfile.subgroups("neuer");
 	ASSERT_EQ(1, groups.size());
 	ASSERT_EQ("test", groups[0]);

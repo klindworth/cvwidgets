@@ -79,6 +79,28 @@ namespace hdf5attribute
 		H5Tset_size(type_id, val.size());
 		return type_id;
 	}
+
+	std::vector<std::string> list_attributes(hdf5dataset& hdataset)
+	{
+		H5O_info_t info;
+		H5Oget_info(hdataset.handle(), &info);
+		std::size_t num_attr = info.num_attrs;
+
+		std::vector<std::string> result(num_attr);
+
+		const int MAX_LEN = 256;
+		char attr_name[MAX_LEN];
+
+		for(std::size_t i = 0; i < num_attr; ++i)
+		{
+			hid_t attribute_id = H5Aopen_idx(hdataset.handle(), i);
+			H5Aget_name(attribute_id, MAX_LEN, attr_name);
+			result[i] = std::string(attr_name);
+			H5Aclose(attribute_id);
+		}
+
+		return result;
+	}
 }
 
 hdf5dataset::hdf5dataset(hdf5file& hfile, const std::string& pname) : _hfile(hfile), _name(pname)

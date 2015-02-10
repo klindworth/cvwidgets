@@ -44,6 +44,7 @@ public:
 
 	void read(void* data);
 	void write(void* data);
+	std::string name() const { return _name; }
 
 	hid_t type() const;
 	hid_t handle() const;
@@ -126,6 +127,8 @@ namespace hdf5attribute
 
 		write_internal(hdataset, name, type_id, buffer, overwrite);
 	}
+
+	std::vector<std::string> list_attributes(hdf5dataset& hdataset);
 }
 
 
