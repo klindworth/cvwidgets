@@ -48,12 +48,14 @@ if(BUILD_HDF5_SUPPORT)
         ${SOURCES}
         hdf5internals.cpp
         hdf5wrapper.cpp
+        h5types.cpp
     )
 
     set(HEADERS
         ${HEADERS}
         hdf5internals.h
         hdf5wrapper.h
+        h5types.h
     )
 endif()
 
@@ -89,7 +91,7 @@ if(GTEST_FOUND)
         cvmatprovider.h
     )
     if(BUILD_HDF5_SUPPORT)
-        set(TESTSOURCES ${TESTSOURCES} tests.cpp hdf5internals.cpp hdf5wrapper.cpp)
+        set(TESTSOURCES ${TESTSOURCES} tests.cpp hdf5internals.cpp hdf5wrapper.cpp h5types.cpp)
     endif()
     include_directories(${GTEST_INCLUDE_DIRS})
     add_executable(${PROJECT_NAME}_tests ${TESTHEADERS} ${TESTSOURCES})
