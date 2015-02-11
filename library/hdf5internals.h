@@ -14,6 +14,39 @@ class Mat;
 namespace cvio
 {
 
+namespace h5types {
+	template<typename T>
+	hid_t inline type_to_type_id()
+	{
+		throw std::runtime_error("unknown type");
+	}
+
+	template<> inline hid_t type_to_type_id<short>() { return H5T_NATIVE_INT16; }
+	template<> inline hid_t type_to_type_id<int>() { return H5T_NATIVE_INT32; }
+	template<> inline hid_t type_to_type_id<unsigned int>() { return H5T_NATIVE_UINT32; }
+	template<> inline hid_t type_to_type_id<unsigned short>() { return H5T_NATIVE_UINT16; }
+	template<> inline hid_t type_to_type_id<unsigned char>() { return H5T_NATIVE_UINT8; }
+	template<> inline hid_t type_to_type_id<std::string>() { return H5T_C_S1; }
+
+	template<typename T>
+	hid_t value_to_type_id(const T&)
+	{
+		return H5Tcopy(type_to_type_id<T>());
+	}
+
+	template<>
+	hid_t value_to_type_id(const std::string& val);
+
+	int typeid_to_ocv(hid_t d);
+	hid_t ocv_to_typeid(int d);
+
+	template<typename T>
+	const T* get_buffer(const T& val) { return &val; }
+	const char* get_buffer(const std::string& val);
+
+	std::string typeid_to_string(hid_t d);
+}
+
 class hdf5file
 {
 public:
@@ -61,34 +94,12 @@ private:
 namespace hdf5attribute_impl
 {
 
-	template<typename T>
-	hid_t inline type_to_type_id()
-	{
-		throw std::runtime_error("unknown type");
-	}
-
-	template<> inline hid_t type_to_type_id<short>() { return H5T_NATIVE_INT16; }
-	template<> inline hid_t type_to_type_id<int>() { return H5T_NATIVE_INT32; }
-	template<> inline hid_t type_to_type_id<unsigned int>() { return H5T_NATIVE_UINT32; }
-	template<> inline hid_t type_to_type_id<unsigned short>() { return H5T_NATIVE_UINT16; }
-	template<> inline hid_t type_to_type_id<unsigned char>() { return H5T_NATIVE_UINT8; }
-	template<> inline hid_t type_to_type_id<std::string>() { return H5T_C_S1; }
-
-	template<typename T>
-	hid_t val_to_type_id(const T&)
-	{
-		return H5Tcopy(type_to_type_id<T>());
-	}
-
-	template<>
-	hid_t val_to_type_id(const std::string& val);
-
 	void compare_and_read_scalar_attribute_internal(hid_t attribute_id, hid_t type_id, hid_t expected_type, void* buffer);
 
 	template<typename T>
 	T compare_and_read_scalar_attribute(hid_t attribute_id, hid_t type_id)
 	{
-		hid_t expected_type = type_to_type_id<T>();
+		hid_t expected_type = h5types::type_to_type_id<T>();
 		T data;
 		compare_and_read_scalar_attribute_internal(attribute_id, type_id, expected_type, &data);
 		return data;
@@ -97,24 +108,18 @@ namespace hdf5attribute_impl
 	template<>
 	std::string compare_and_read_scalar_attribute(hid_t attribute_id, hid_t type_id);
 
-	template<typename T>
-	const T* get_buffer(const T& val) { return &val; }
-	const char* get_buffer(const std::string& val);
-
 	void write_internal(hdf5dataset& hdataset, const std::string& name, hid_t type_id, const void* buffer, bool overwrite);
 
 	template<typename T>
 	void write(hdf5dataset& hdataset, const std::string& name, T value, bool overwrite = false)
 	{
-		hid_t type_id = val_to_type_id(value);
-		const void* buffer = get_buffer(value);
+		hid_t type_id = h5types::value_to_type_id(value);
+		const void* buffer = h5types::get_buffer(value);
 
 		write_internal(hdataset, name, type_id, buffer, overwrite);
 	}
 
 	std::vector<std::string> list_attributes(hdf5dataset& hdataset);
-
-	std::string type_to_string(hid_t d);
 }
 
 class hdf5attribute
@@ -126,7 +131,7 @@ public:
 
 	hid_t handle() const { return _attribute_id; }
 	hid_t type() const { return _type_id; }
-	std::string type_as_string() const { return hdf5attribute_impl::type_to_string(type()); }
+	std::string type_as_string() const { return h5types::typeid_to_string(type()); }
 
 	template<typename T>
 	T read()
@@ -147,10 +152,6 @@ namespace hdf5attribute_impl {
 		return attribute.read<T>();
 	}
 }
-
-
-int get_ocvtype(hid_t d);
-hid_t get_type(int d);
 
 }
 

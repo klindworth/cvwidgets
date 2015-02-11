@@ -55,10 +55,12 @@ TEST(CvIoHDF5, Attributes)
 	cvio::hdf5attribute attr(hdataset, "timestamp");
 	ASSERT_EQ(500, attr.read<int>());
 	ASSERT_EQ("500", attr.read_as_string());
+	ASSERT_EQ("int", attr.type_as_string());
 
 	cvio::hdf5attribute attr2(hdataset, "debugname");
 	ASSERT_EQ("tester", attr2.read<std::string>());
 	ASSERT_EQ("tester", attr2.read_as_string());
+	ASSERT_EQ("string", attr2.type_as_string());
 
 	std::vector<std::string> groups = hfile.subgroups("neuer");
 	ASSERT_EQ(1, groups.size());

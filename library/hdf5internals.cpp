@@ -15,28 +15,6 @@ namespace cvio
 
 namespace hdf5attribute_impl
 {
-	std::string type_to_string(hid_t d)
-	{
-		if(H5Tequal(d, H5T_NATIVE_FLOAT))
-			return "float";
-		else if(H5Tequal(d, H5T_NATIVE_DOUBLE))
-			return "double";
-		else if(H5Tequal(d, H5T_NATIVE_INT32))
-			return "int";
-		else if(H5Tequal(d, H5T_NATIVE_INT16))
-			return "short";
-		else if(H5Tequal(d, H5T_NATIVE_UINT16))
-			return "unsigned short";
-		else if(H5Tequal(d, H5T_NATIVE_UCHAR))
-			return "unsigned char";
-		else if(H5Tequal(d, H5T_NATIVE_CHAR))
-			return "char";
-		else if(H5Tget_class(d) == H5T_STRING)
-			return "string";
-		else
-			throw std::runtime_error("unsupported type");
-	}
-
 	void write_internal(hdf5dataset& hdataset, const std::string& name, hid_t type_id, const void* buffer, bool overwrite)
 	{
 		bool exists = H5Aexists(hdataset.handle(), name.c_str());
@@ -65,8 +43,6 @@ namespace hdf5attribute_impl
 		H5Aclose(attribute_id);
 	}
 
-	const char* get_buffer(const std::string& val) { return val.c_str(); }
-
 	void compare_and_read_scalar_attribute_internal(hid_t attribute_id, hid_t type_id, hid_t expected_type, void* buffer)
 	{
 		if(H5Tequal(type_id, expected_type))
@@ -93,14 +69,6 @@ namespace hdf5attribute_impl
 			}
 		}
 		throw std::runtime_error("type mismatch");
-	}
-
-	template<>
-	hid_t val_to_type_id(const std::string& val)
-	{
-		hid_t type_id = H5Tcopy(H5T_C_S1);
-		H5Tset_size(type_id, val.size());
-		return type_id;
 	}
 
 	std::vector<std::string> list_attributes(hdf5dataset& hdataset)
@@ -264,7 +232,7 @@ void hdf5file::save(const cv::Mat& mat, const std::string& name, bool overwrite)
 		dims[rank++] = mat.channels();
 
 	hid_t space_id = H5Screate_simple(rank, &(dims[0]), NULL);
-	hid_t type_id = get_type(mat.depth());
+	hid_t type_id = h5types::ocv_to_typeid(mat.depth());
 
 	hdf5dataset hdataset(*this, name, type_id, space_id, overwrite);
 
@@ -300,7 +268,7 @@ cv::Mat hdf5file::load(const std::string& name)
 		--rank;
 	}
 
-	cv::Mat dataset = cv::Mat(rank, &(dims_out_i[0]), CV_MAKETYPE(get_ocvtype(type_id), channels));
+	cv::Mat dataset = cv::Mat(rank, &(dims_out_i[0]), CV_MAKETYPE(h5types::typeid_to_ocv(type_id), channels));
 
 	hdataset.read(dataset.data);
 
@@ -317,7 +285,7 @@ std::vector<std::string> hdf5file::subelements(const std::string& path, int desi
 	char element_name[MAX_NAME];
 
 	hsize_t object_count;
-	herr_t err = H5Gget_num_objs(group_id, &object_count);
+	H5Gget_num_objs(group_id, &object_count);
 
 	std::vector<std::string> result;
 
@@ -342,47 +310,6 @@ std::vector<std::string> hdf5file::subgroups(const std::string& path)
 std::vector<std::string> hdf5file::datasets(const std::string &path)
 {
 	return subelements(path, H5G_DATASET);
-}
-
-int get_ocvtype(hid_t d)
-{
-	if(H5Tequal(d, H5T_NATIVE_FLOAT))
-		return CV_32F;
-	else if(H5Tequal(d, H5T_NATIVE_DOUBLE))
-		return CV_64F;
-	else if(H5Tequal(d, H5T_NATIVE_INT32))
-		return CV_32S;
-	else if(H5Tequal(d, H5T_NATIVE_INT16))
-		return CV_16S;
-	else if(H5Tequal(d, H5T_NATIVE_UINT16))
-		return CV_16U;
-	else if(H5Tequal(d, H5T_NATIVE_UCHAR))
-		return CV_8U;
-	else if(H5Tequal(d, H5T_NATIVE_CHAR))
-		return CV_8S;
-	else
-		throw std::runtime_error("unsupported type");
-}
-
-hid_t get_type(int d)
-{
-	//int d = dataset.depth();
-	if(d == CV_32F)
-		return H5T_NATIVE_FLOAT;
-	else if(d == CV_64F)
-		return H5T_NATIVE_DOUBLE;
-	else if(d == CV_32S)
-		return H5T_NATIVE_INT32;
-	else if(d == CV_16S)
-		return H5T_NATIVE_INT16;
-	else if(d == CV_16U)
-		return H5T_NATIVE_UINT16;
-	else if(d == CV_8U)
-		return H5T_NATIVE_UCHAR;
-	else if(d == CV_8S)
-		return H5T_NATIVE_CHAR;
-	else
-		throw std::runtime_error("unsupported type");
 }
 
 void hdf5file::touch_group(const std::string& name)
@@ -418,6 +345,81 @@ void hdf5file::touch_group_recursive(const std::string& name)
 		//std::cout << fullpath << std::endl;
 		touch_group(fullpath);
 	}
+}
+
+namespace h5types {
+int typeid_to_ocv(hid_t d)
+{
+	if(H5Tequal(d, H5T_NATIVE_FLOAT))
+		return CV_32F;
+	else if(H5Tequal(d, H5T_NATIVE_DOUBLE))
+		return CV_64F;
+	else if(H5Tequal(d, H5T_NATIVE_INT32))
+		return CV_32S;
+	else if(H5Tequal(d, H5T_NATIVE_INT16))
+		return CV_16S;
+	else if(H5Tequal(d, H5T_NATIVE_UINT16))
+		return CV_16U;
+	else if(H5Tequal(d, H5T_NATIVE_UCHAR))
+		return CV_8U;
+	else if(H5Tequal(d, H5T_NATIVE_CHAR))
+		return CV_8S;
+	else
+		throw std::runtime_error("unsupported type");
+}
+
+hid_t ocv_to_typeid(int d)
+{
+	//int d = dataset.depth();
+	if(d == CV_32F)
+		return H5T_NATIVE_FLOAT;
+	else if(d == CV_64F)
+		return H5T_NATIVE_DOUBLE;
+	else if(d == CV_32S)
+		return H5T_NATIVE_INT32;
+	else if(d == CV_16S)
+		return H5T_NATIVE_INT16;
+	else if(d == CV_16U)
+		return H5T_NATIVE_UINT16;
+	else if(d == CV_8U)
+		return H5T_NATIVE_UCHAR;
+	else if(d == CV_8S)
+		return H5T_NATIVE_CHAR;
+	else
+		throw std::runtime_error("unsupported type");
+}
+
+template<>
+hid_t value_to_type_id(const std::string& val)
+{
+	hid_t type_id = H5Tcopy(H5T_C_S1);
+	H5Tset_size(type_id, val.size());
+	return type_id;
+}
+
+std::string typeid_to_string(hid_t d)
+{
+	if(H5Tequal(d, H5T_NATIVE_FLOAT))
+		return "float";
+	else if(H5Tequal(d, H5T_NATIVE_DOUBLE))
+		return "double";
+	else if(H5Tequal(d, H5T_NATIVE_INT32))
+		return "int";
+	else if(H5Tequal(d, H5T_NATIVE_INT16))
+		return "short";
+	else if(H5Tequal(d, H5T_NATIVE_UINT16))
+		return "unsigned short";
+	else if(H5Tequal(d, H5T_NATIVE_UCHAR))
+		return "unsigned char";
+	else if(H5Tequal(d, H5T_NATIVE_CHAR))
+		return "char";
+	else if(H5Tget_class(d) == H5T_STRING)
+		return "string";
+	else
+		throw std::runtime_error("unsupported type");
+}
+
+const char* get_buffer(const std::string& val) { return val.c_str(); }
 }
 
 }
