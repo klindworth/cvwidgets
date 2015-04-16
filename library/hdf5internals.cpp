@@ -71,6 +71,12 @@ namespace hdf5attribute_impl
 		throw std::runtime_error("type mismatch");
 	}
 
+	template<>
+	void write(hdf5dataset &hdataset, const std::string &name, const char* value, bool overwrite)
+	{
+		write(hdataset, name, std::string(value), overwrite);
+	}
+
 	std::vector<std::string> list_attributes(hdf5dataset& hdataset)
 	{
 		H5O_info_t info;
@@ -150,6 +156,8 @@ hdf5dataset::hdf5dataset(hdf5file& hfile, const std::string& pname) : _hfile(hfi
 
 hdf5dataset::hdf5dataset(hdf5file &hfile, const std::string &name, hid_t type_id, hid_t space_id, bool overwrite): _type_id(type_id), _hfile(hfile), _name(name)
 {
+	hfile.touch_group_recursive(name);
+
 	bool exists = H5Lexists(_hfile.handle(), name.c_str(), H5P_DEFAULT);
 	if(exists && overwrite)
 		H5Ldelete(_hfile.handle(), name.c_str(), H5P_DEFAULT);
@@ -186,6 +194,17 @@ hid_t hdf5dataset::type() const
 hid_t hdf5dataset::handle() const
 {
 	return _dataset_id;
+}
+
+std::string hdf5dataset::get_attribute_string(const std::string& name, std::string default_value)
+{
+	if(H5Aexists(_dataset_id, name.c_str()))
+	{
+		hdf5attribute attr(*this, name);
+		return attr.read_as_string();
+	}
+	else
+		return default_value;
 }
 
 hdf5dataset::~hdf5dataset()

@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <QFileDialog>
 
+#include <stdexcept>
+
 cv::Mat valueScaledImage(const cv::Mat& image)
 {
 	double dmin, dmax;
@@ -146,7 +148,6 @@ QString CVMatProvider::valueInfoString(const QPoint& qpt) const
 		else if(type == CV_64F)
 			getChannelText<double>(channeltext, m_original, pt);
 
-
 		if(channels == 1)
 			valuetext = channeltext[0];
 		if(channels == 3)
@@ -159,6 +160,69 @@ QString CVMatProvider::valueInfoString(const QPoint& qpt) const
 		}
 	}
 	return valuetext;
+}
+
+/*template<typename T>
+std::vector<unsigned long> createHistogramm(const T* values, std::size_t stride, std::size_t n, T div, T offset, std::size_t bins)
+{
+	std::vector<unsigned long> result(bins, 0);
+
+	std::size_t bound = n*stride;
+	for(std::size_t i = 0; i < bound; i+= stride)
+	{
+		std::size_t idx = (values[i]-offset) / div;
+		result[idx] += 1;
+	}
+
+	return result;
+}
+
+std::vector<unsigned long> createHistogramm(const cv::Mat& mat, int channel, int bins)
+{
+	std::size_t stride = mat.channels();
+	std::size_t channel_offset = channel;
+
+	int depth = mat.depth();
+
+	if(depth == CV_8U)
+	{
+		assert((256 % bins) == 0);
+
+		createHistogramm(mat.ptr<unsigned char>(0) + channel_offset, stride, mat.total(), 256/bins, bins);
+	}
+}*/
+
+std::vector<unsigned long> create_histogram(const unsigned char* data, std::size_t n, std::size_t stride)
+{
+	std::vector<unsigned long> result(256, 0);
+
+	std::size_t bound = n * stride;
+	for(std::size_t i = 0; i < bound; i+= stride)
+	{
+		result[data[i]] += 1;
+	}
+
+	return result;
+}
+
+std::vector<unsigned long> create_histogram(const cv::Mat& mat, int channel)
+{
+	assert(channel >= 0 && channel < mat.channels());
+	assert(mat.depth() == CV_8U);
+
+	return create_histogram(mat.data + channel, mat.total(), mat.channels());
+}
+
+unsigned char CVMatProvider::histogramsAvailable() const
+{
+	return m_mat.channels();
+}
+
+std::vector<unsigned long> CVMatProvider::createHistogram(unsigned char number) const
+{
+	assert(number < histogramsAvailable());
+
+	return create_histogram(m_mat, number);
 }
 
 void CVMatProvider::saveOriginal() const

@@ -26,6 +26,7 @@ set(SOURCES
     infodialog.cpp
     imagetablemodel.cpp
     cvmatprovider.cpp
+    simplehistogram.cpp
 )
 set(HEADERS
     cvimageviewer.h
@@ -37,6 +38,7 @@ set(HEADERS
     abstractimageprovider.h
     cvmatprovider.h
     cvwidgets_config.h
+    simplehistogram.h
 )
 
 set(FORMS
@@ -74,7 +76,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${HEADERS} ${QTHEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${HEADERS} ${QTHEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/cvio)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 

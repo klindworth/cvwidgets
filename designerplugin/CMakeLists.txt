@@ -13,12 +13,14 @@ set(CMAKE_AUTOMOC ON)
 set(SOURCES
     cvimageviewerplugin.cpp
     cvsimpleviewerplugin.cpp
+    simplehistogramplugin.cpp
     cvwidgetsset.cpp
 )
 
 set(HEADERS
     cvimageviewerplugin.h
     cvsimpleviewerplugin.h
+    simplehistogramplugin.h
     cvwidgetsset.h
 )
 

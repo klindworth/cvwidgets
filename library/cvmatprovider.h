@@ -51,6 +51,9 @@ public:
 	QString typeString() const;
 	void saveOriginal() const;
 
+	std::vector<unsigned long> createHistogram(unsigned char number) const;
+	unsigned char histogramsAvailable() const;
+
 	/**
 	 * @brief createRGBMat Creates a RGB representation of a cv::Mat
 	 * @param image Image, that will be converted

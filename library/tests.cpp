@@ -44,8 +44,10 @@ TEST(CvIoHDF5, Attributes)
 
 	cvio::hdf5file hfile(filename);
 	cvio::hdf5dataset hdataset(hfile, "neuer/test/b");
-	cvio::hdf5attribute_impl::write(hdataset, "timestamp", 500, true);
-	cvio::hdf5attribute_impl::write(hdataset, "debugname", std::string("tester"), true);
+	hdataset.set_attribute("timestamp", 500);
+	hdataset.set_attribute("debugname", "tester");
+	//cvio::hdf5attribute_impl::write(hdataset, "timestamp", 500, true);
+	//cvio::hdf5attribute_impl::write(hdataset, "debugname", std::string("tester"), true);
 
 	ASSERT_EQ("tester", cvio::hdf5attribute_impl::read<std::string>(hdataset, "debugname"));
 	ASSERT_EQ(500, cvio::hdf5attribute_impl::read<int>(hdataset, "timestamp"));

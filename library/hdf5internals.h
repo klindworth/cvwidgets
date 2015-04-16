@@ -16,49 +16,7 @@ class Mat;
 namespace cvio
 {
 
-class hdf5file
-{
-public:
-	hdf5file(const std::string& filename, bool open = true, bool create = true);
-	~hdf5file();
-
-	void touch_group(const std::string& name);
-	void touch_group_recursive(const std::string& name);
-
-	hid_t handle() const;
-	void save(const cv::Mat& dataset, const std::string& name, bool overwrite);
-	cv::Mat load(const std::string& name);
-	std::string filename() const;
-	std::vector<std::string> subgroups(const std::string& path);
-	std::vector<std::string> datasets(const std::string& path);
-	std::vector<std::string> subelements(const std::string& path, int desired_type);
-
-private:
-	std::string _name;
-	hid_t _file_id;
-};
-
-class hdf5dataset
-{
-public:
-	hdf5dataset(hdf5file& hfile, const std::string& pname);
-	hdf5dataset(hdf5file& hfile, const std::string& pname, hid_t type_id, hid_t space_id, bool overwrite);
-
-	void read(void* data);
-	void write(void* data);
-	std::string name() const { return _name; }
-
-	hid_t type() const;
-	hid_t handle() const;
-
-	~hdf5dataset();
-
-private:
-	hid_t _dataset_id, _type_id;
-	const hdf5file& _hfile;
-	std::string _name;
-	bool _own_type_id;
-};
+class hdf5dataset;
 
 namespace hdf5attribute_impl
 {
@@ -88,6 +46,9 @@ namespace hdf5attribute_impl
 		write_internal(hdataset, name, type_id, buffer, overwrite);
 	}
 
+	template<>
+	void write(hdf5dataset &hdataset, const std::string &name, const char* value, bool overwrite);
+
 	std::vector<std::string> list_attributes(hdf5dataset& hdataset);
 }
 
@@ -113,6 +74,28 @@ private:
 	hid_t _type_id;
 };
 
+class hdf5file
+{
+public:
+	hdf5file(const std::string& filename, bool open = true, bool create = true);
+	~hdf5file();
+
+	void touch_group(const std::string& name);
+	void touch_group_recursive(const std::string& name);
+
+	hid_t handle() const;
+	void save(const cv::Mat& dataset, const std::string& name, bool overwrite);
+	cv::Mat load(const std::string& name);
+	std::string filename() const;
+	std::vector<std::string> subgroups(const std::string& path);
+	std::vector<std::string> datasets(const std::string& path);
+	std::vector<std::string> subelements(const std::string& path, int desired_type);
+
+private:
+	std::string _name;
+	hid_t _file_id;
+};
+
 namespace hdf5attribute_impl {
 	template<typename T>
 	T read(hdf5dataset& hdataset, const std::string& name)
@@ -121,6 +104,47 @@ namespace hdf5attribute_impl {
 		return attribute.read<T>();
 	}
 }
+
+class hdf5dataset
+{
+public:
+	hdf5dataset(hdf5file& hfile, const std::string& pname);
+	hdf5dataset(hdf5file& hfile, const std::string& pname, hid_t type_id, hid_t space_id, bool overwrite);
+
+	void read(void* data);
+	void write(void* data);
+	std::string name() const { return _name; }
+
+	hid_t type() const;
+	hid_t handle() const;
+
+	template<typename T>
+	T get_attribute(const std::string& name, T default_value)
+	{
+		if(H5Aexists(_dataset_id, name.c_str()))
+			return hdf5attribute_impl::read<T>(*this, name);
+		else
+			return default_value;
+	}
+
+	std::string get_attribute_string(const std::string& name, std::string default_value);
+
+	template<typename T>
+	void set_attribute(const std::string& name, T value)
+	{
+		hdf5attribute_impl::write(*this, name, value, true);
+	}
+
+	~hdf5dataset();
+
+private:
+	hid_t _dataset_id, _type_id;
+	const hdf5file& _hfile;
+	std::string _name;
+	bool _own_type_id;
+};
+
+
 
 }
 
