@@ -3,8 +3,9 @@
 
 #include <QWidget>
 #include <vector>
+#include "cvwidgets_config.h"
 
-class SimpleHistogram : public QWidget
+class CV_WIDGET_LIBSHARED_EXPORT SimpleHistogram : public QWidget
 {
 	Q_OBJECT
 

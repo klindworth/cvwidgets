@@ -42,6 +42,9 @@ InfoDialog::InfoDialog(QSharedPointer<AbstractImageProvider>& info, QWidget *par
 	m_model = new ImageTableModel(info);
 	ui->tableView->setModel(m_model);
 	connect(ui->cbBackground, SIGNAL(toggled(bool)), m_model, SLOT(setPixelcolorAsBackground(bool)));
+
+	if(m_info->histogramsAvailable() > 0)
+		ui->histogram->setData(m_info->createHistogram(0));
 }
 
 void InfoDialog::scrollTo(int x, int y)

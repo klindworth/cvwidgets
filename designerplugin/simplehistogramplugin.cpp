@@ -69,7 +69,7 @@ bool SimpleHistogramPlugin::isContainer() const
 
 QString SimpleHistogramPlugin::domXml() const
 {
-	return QLatin1String("<widget class=\"SimpleHistogram\" name=\"SimpleHistogram\">\n</widget>\n");
+	return QLatin1String("<widget class=\"SimpleHistogram\" name=\"histogram\">\n</widget>\n");
 }
 
 QString SimpleHistogramPlugin::includeFile() const
