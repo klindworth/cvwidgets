@@ -59,11 +59,6 @@ public:
 	virtual void saveOriginal() const = 0;
 
 	virtual std::vector<unsigned long> createHistogram(unsigned char number) const = 0;
-	virtual unsigned char histogramsAvailable() const = 0;
-	virtual double min() const = 0;
-	virtual double max() const = 0;
-	virtual double mean() const = 0;
-	virtual double stddev() const = 0;
 	virtual std::size_t channelInformationsCount() const = 0;
 	virtual ChannelInformation channelInformation(std::size_t channelnr) const = 0;
 };

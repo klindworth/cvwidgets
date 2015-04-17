@@ -60,7 +60,7 @@ void InfoDialog::channelSelected(int nr)
 		ui->lblStat->setText(QString("mean: %1, stddev: %2").arg(info.mean).arg(info.stddev));
 		ui->lblExtrema->setText(QString("min: %1, max: %2").arg(info.min).arg(info.max));
 
-		ui->histogram->setData(m_info->createHistogram(nr), m_info->min(), m_info->max());
+		ui->histogram->setData(m_info->createHistogram(nr), info.min, info.max);
 	}
 }
 
