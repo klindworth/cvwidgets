@@ -79,6 +79,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="cbLog">
+        <property name="text">
+         <string>Logarithmic Y axis</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

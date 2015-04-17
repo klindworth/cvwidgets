@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <cmath>
 #include <QPainter>
 #include <QMouseEvent>
 
@@ -11,6 +12,17 @@ SimpleHistogram::SimpleHistogram(QWidget *parent) : QWidget(parent)
 	m_x_offset = 0;
 	m_y_offset = 0;
 	m_always_zero_as_axis = true;
+	m_log_y_axis = false;
+}
+
+void SimpleHistogram::setLogYAxis(bool enable)
+{
+	m_log_y_axis = enable;
+}
+
+bool SimpleHistogram::logYAxis() const
+{
+	return m_log_y_axis;
 }
 
 void SimpleHistogram::setData(const std::vector<BinValue>& bins, double min, double max)
@@ -28,6 +40,9 @@ void SimpleHistogram::setData(const std::vector<BinValue>& bins, double min, dou
 		//C++98
 		m_min = *(std::min_element(m_bins.begin(), m_bins.end()));
 		m_max = *(std::max_element(m_bins.begin(), m_bins.end()));
+
+		m_actual_min = transformed_value(m_min);
+		m_actual_max = transformed_value(m_max);
 
 		m_sum = std::accumulate(m_bins.begin(), m_bins.end(), static_cast<BinValue>(0));
 	}
@@ -52,16 +67,16 @@ void SimpleHistogram::paintEvent(QPaintEvent *)
 
 	if(cl_count > 1)
 	{
-		BinValue min_count = m_always_zero_as_axis ? 0 : m_min;
+		float min_count = m_always_zero_as_axis ? 0 : m_actual_min;
 
-		if(min_count == m_max)
+		if(min_count == m_actual_max)
 			return;
 
 		QVector<QPointF> points;
 		points.append(QPointF(m_x_offset,height()-m_y_offset));
 		for(std::size_t i = 0; i < cl_count; ++i)
 		{
-			QPointF cpoint(x_pos_for_bin(i), height() - (m_y_per_val * (m_bins[i] - min_count) + m_y_offset));
+			QPointF cpoint(x_pos_for_bin(i), height() - (m_y_per_val * (transformed_value(m_bins[i]) - min_count) + m_y_offset));
 			points.append(cpoint);
 		}
 
@@ -73,18 +88,26 @@ void SimpleHistogram::paintEvent(QPaintEvent *)
 	}
 }
 
+float SimpleHistogram::transformed_value(unsigned long value) const
+{
+	if(m_log_y_axis)
+		return value == 0 ? 0 : std::log(value);
+	else
+		return value;
+}
+
 void SimpleHistogram::updateInternals()
 {
 	std::size_t cl_count = m_bins.size();
 
 	if(cl_count > 1)
 	{
-		BinValue min_count = m_always_zero_as_axis ? 0 : m_min;
+		float min_count = m_always_zero_as_axis ? 0 : m_actual_min;
 
-		if(min_count == m_max)
+		if(min_count == m_actual_max)
 			return;
 
-		m_y_per_val = ((float)this->height()-m_y_offset) / (m_max - min_count);
+		m_y_per_val = ((float)this->height()-m_y_offset) / (m_actual_max - min_count);
 		m_x_per_bin = ((float)this->width()-m_x_offset) / (cl_count -1);
 	}
 }
@@ -108,10 +131,4 @@ void SimpleHistogram::mouseMoveEvent(QMouseEvent *ev)
 		if(bin_pos < m_bins.size())
 			setToolTip("bin: " + QString::number(bin_pos) + "[" + QString::number(interval_min) + "," + QString::number(interval_max) + ") , value: " + QString::number(m_bins[bin_pos]));
 	}
-	/*int x = ev->x();
-	int idx = getValueIndex(x);
-	if(idx >= 0 && idx < m_len)
-	{
-		setToolTip("disparity: " + QString::number(getDisparity(x)) + ", value: " + QString::number(m_values[idx]));
-	}*/
 }

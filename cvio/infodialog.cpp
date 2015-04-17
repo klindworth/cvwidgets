@@ -42,7 +42,7 @@ InfoDialog::InfoDialog(QSharedPointer<AbstractImageProvider>& info, QWidget *par
 	ui->tableView->setModel(m_model);
 	connect(ui->cbBackground, SIGNAL(toggled(bool)), m_model, SLOT(setPixelcolorAsBackground(bool)));
 	connect(ui->cbChannelSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(channelSelected(int)));
-
+	connect(ui->cbLog, SIGNAL(toggled(bool)), ui->histogram, SLOT(setLogYAxis(bool)));
 
 	std::size_t icount = m_info->channelInformationsCount();
 	for(std::size_t i = 0; i < icount; ++i)
