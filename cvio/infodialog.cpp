@@ -41,12 +41,27 @@ InfoDialog::InfoDialog(QSharedPointer<AbstractImageProvider>& info, QWidget *par
 	m_model = new ImageTableModel(info);
 	ui->tableView->setModel(m_model);
 	connect(ui->cbBackground, SIGNAL(toggled(bool)), m_model, SLOT(setPixelcolorAsBackground(bool)));
+	connect(ui->cbChannelSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(channelSelected(int)));
 
-	ui->lblStat->setText(QString("mean: %1, stddev: %2").arg(m_info->mean()).arg(m_info->stddev()));
-	ui->lblExtrema->setText(QString("min: %1, max: %2").arg(m_info->min()).arg(m_info->max()));
 
-	if(m_info->histogramsAvailable() > 0)
-		ui->histogram->setData(m_info->createHistogram(0), m_info->min(), m_info->max());
+	std::size_t icount = m_info->channelInformationsCount();
+	for(std::size_t i = 0; i < icount; ++i)
+		ui->cbChannelSelector->addItem(QString("Channel %1").arg(i));
+
+	//ui->lblStat->setText(QString("mean: %1, stddev: %2").arg(m_info->mean()).arg(m_info->stddev()));
+	//ui->lblExtrema->setText(QString("min: %1, max: %2").arg(m_info->min()).arg(m_info->max()));
+}
+
+void InfoDialog::channelSelected(int nr)
+{
+	if(nr >= 0 && nr < (int)m_info->channelInformationsCount())
+	{
+		ChannelInformation info = m_info->channelInformation(nr);
+		ui->lblStat->setText(QString("mean: %1, stddev: %2").arg(info.mean).arg(info.stddev));
+		ui->lblExtrema->setText(QString("min: %1, max: %2").arg(info.min).arg(info.max));
+
+		ui->histogram->setData(m_info->createHistogram(nr), m_info->min(), m_info->max());
+	}
 }
 
 void InfoDialog::scrollTo(int x, int y)

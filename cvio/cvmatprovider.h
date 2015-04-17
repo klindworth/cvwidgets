@@ -57,6 +57,8 @@ public:
 	double max() const;
 	double mean() const;
 	double stddev() const;
+	std::size_t channelInformationsCount() const;
+	ChannelInformation channelInformation(std::size_t channelnr) const;
 
 	/**
 	 * @brief createRGBMat Creates a RGB representation of a cv::Mat

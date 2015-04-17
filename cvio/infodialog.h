@@ -48,6 +48,9 @@ public:
 public slots:
 	void scrollTo(int x, int y);
 
+private slots:
+	void channelSelected(int nr);
+
 private:
 	Ui::InfoDialog *ui;
 	ImageTableModel *m_model;

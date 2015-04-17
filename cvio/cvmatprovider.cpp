@@ -118,6 +118,24 @@ double CVMatProvider::stddev() const
 	return m_stddev[0];
 }
 
+std::size_t CVMatProvider::channelInformationsCount() const
+{
+	return m_original.channels();
+}
+
+ChannelInformation CVMatProvider::channelInformation(std::size_t channelnr) const
+{
+	assert((int)channelnr < m_original.channels());
+
+	ChannelInformation result;
+	result.mean = m_mean[channelnr];
+	result.stddev = m_stddev[channelnr];
+	result.max = m_max;
+	result.min = m_min;
+
+	return result;
+}
+
 QString CVMatProvider::typeString() const
 {
 	QString ftype;

@@ -28,6 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <QImage>
 
+class ChannelInformation
+{
+public:
+	double min, max, mean, stddev;
+};
+
 class AbstractImageProvider
 {
 public:
@@ -58,6 +64,8 @@ public:
 	virtual double max() const = 0;
 	virtual double mean() const = 0;
 	virtual double stddev() const = 0;
+	virtual std::size_t channelInformationsCount() const = 0;
+	virtual ChannelInformation channelInformation(std::size_t channelnr) const = 0;
 };
 
 #endif // ABSTRACTIMAGEPROVIDER_H
