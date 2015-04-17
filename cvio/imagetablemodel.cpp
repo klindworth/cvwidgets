@@ -56,6 +56,17 @@ QVariant ImageTableModel::data(const QModelIndex &index, int role) const
 		else
 			return QVariant();
 	}
+	else if(role == Qt::TextColorRole)
+	{
+		if(m_pixelbackground)
+		{
+			int back = qGray(m_provider->image().pixel(QPoint(index.column(), index.row())));
+			int textc = back > 128 ? 0 : 255;
+			return QColor(qRgb(textc,textc, textc));
+		}
+		else
+			return QVariant();
+	}
 	else
 		return QVariant();
 }
