@@ -15,10 +15,25 @@ class CV_WIDGET_LIBSHARED_EXPORT SimpleHistogram : public QWidget
 
 public:
 	explicit SimpleHistogram(QWidget *parent = 0);
+	/**
+	 * @brief setData Sets the histogram data
+	 * @param bins Vector with the histogram counts
+	 * @param min Value of the first bin class (not the count!)
+	 * @param max Value of the last bin class (not the count!)
+	 */
 	void setData(const std::vector<BinValue>& bins, double min, double max);
+
+	/**
+	 * @brief logYAxis Checks, if the Y axis is logarithmic
+	 * @return True, when the Y axis is logarithmic
+	 */
 	bool logYAxis() const;
 
 public slots:
+	/**
+	 * @brief setLogYAxis Sets the Y axis to a logarithmic or linear scale
+	 * @param enable True=logarithmic, false=linear
+	 */
 	void setLogYAxis(bool enable);
 
 protected:

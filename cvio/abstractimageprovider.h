@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <QImage>
 
+/**
+ * @brief The ChannelInformation class holds various informations about an image channel
+ */
 class ChannelInformation
 {
 public:
@@ -58,8 +61,24 @@ public:
 
 	virtual void saveOriginal() const = 0;
 
+	/**
+	 * @brief createHistogram Creates a histogram for a single channel
+	 * @param number Number of the channel, for which a histogram will be created
+	 * @return A vector with all the bins. Since the histogram is created from the viewable interpretation of the image, it will container 256 bins.
+	 */
 	virtual std::vector<unsigned long> createHistogram(unsigned char number) const = 0;
+
+	/**
+	 * @brief channelInformationsCount Returns the number of the available ChannelInformation instances (equal to the number of channels)
+	 * @return Channels
+	 */
 	virtual std::size_t channelInformationsCount() const = 0;
+
+	/**
+	 * @brief channelInformation Returns an instance of ChannelInformation with some information like mean, min, etc.
+	 * @param channelnr Number of the channel, for which the information should be returned
+	 * @return Information about the requested image channel
+	 */
 	virtual ChannelInformation channelInformation(std::size_t channelnr) const = 0;
 };
 

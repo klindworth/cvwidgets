@@ -1,5 +1,5 @@
-#ifndef SimpleHistogramPlugin_H
-#define SimpleHistogramPlugin_H
+#ifndef SIMPLEHISTOGRAMPLUGIN_H
+#define SIMPLEHISTOGRAMPLUGIN_H
 
 #include <QDesignerCustomWidgetInterface>
 
