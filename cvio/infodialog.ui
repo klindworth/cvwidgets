@@ -54,6 +54,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="lblStat">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="SimpleHistogram" name="histogram">
      <property name="minimumSize">
       <size>

@@ -55,6 +55,8 @@ public:
 	unsigned char histogramsAvailable() const;
 	double min() const;
 	double max() const;
+	double mean() const;
+	double stddev() const;
 
 	/**
 	 * @brief createRGBMat Creates a RGB representation of a cv::Mat
@@ -68,5 +70,6 @@ private:
 	cv::Mat m_mat, m_original;
 	QImage m_image;
 	double m_min, m_max;
+	cv::Scalar m_mean, m_stddev;
 };
 #endif // CVMATPROVIDER_H

@@ -36,6 +36,7 @@ cv::Mat valueScaledImage(const cv::Mat& image)
 {
 	double dmin, dmax;
 	cv::minMaxIdx(image, &dmin, &dmax);
+
 	double scale = 255/(dmax-dmin);
 
 	cv::Mat result;
@@ -82,6 +83,7 @@ void CVMatProvider::setCVMat(const cv::Mat &image, bool contrast, bool conversio
 		m_image = QImage(m_mat.data, m_mat.cols, m_mat.rows, m_mat.step, QImage::Format_RGB888);
 
 		cv::minMaxIdx(m_original, &m_min, &m_max);
+		cv::meanStdDev(m_original, m_mean, m_stddev);
 	}
 }
 
@@ -96,11 +98,6 @@ void getChannelText(std::vector<QString>& channeltext, const cv::Mat& image, cv:
 	}
 }
 
-QString CVMatProvider::minmax() const
-{
-	return QString("min: %1, max: %2").arg(min()).arg(max());
-}
-
 double CVMatProvider::min() const
 {
 	return m_min;
@@ -109,6 +106,16 @@ double CVMatProvider::min() const
 double CVMatProvider::max() const
 {
 	return m_max;
+}
+
+double CVMatProvider::mean() const
+{
+	return m_mean[0];
+}
+
+double CVMatProvider::stddev() const
+{
+	return m_stddev[0];
 }
 
 QString CVMatProvider::typeString() const

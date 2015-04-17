@@ -37,11 +37,13 @@ InfoDialog::InfoDialog(QSharedPointer<AbstractImageProvider>& info, QWidget *par
 	ui->setupUi(this);
 
 	ui->lblType->setText(m_info->typeString());
-	ui->lblExtrema->setText(m_info->minmax());
 	ui->lblSize->setText(QString("%1x%2").arg(m_info->image().width()).arg(m_info->image().height()));
 	m_model = new ImageTableModel(info);
 	ui->tableView->setModel(m_model);
 	connect(ui->cbBackground, SIGNAL(toggled(bool)), m_model, SLOT(setPixelcolorAsBackground(bool)));
+
+	ui->lblStat->setText(QString("mean: %1, stddev: %2").arg(m_info->mean()).arg(m_info->stddev()));
+	ui->lblExtrema->setText(QString("min: %1, max: %2").arg(m_info->min()).arg(m_info->max()));
 
 	if(m_info->histogramsAvailable() > 0)
 		ui->histogram->setData(m_info->createHistogram(0), m_info->min(), m_info->max());

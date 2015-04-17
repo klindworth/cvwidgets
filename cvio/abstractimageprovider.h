@@ -43,11 +43,7 @@ public:
 	 * @return A QString with a text representation of the value at point qpt
 	 */
 	virtual QString valueInfoString(const QPoint& qpt) const = 0;
-	/**
-	 * @brief minmax Returns a text representation of the min/max value in the image
-	 * @return
-	 */
-	virtual QString minmax() const = 0;
+
 	/**
 	 * @brief typeString Returns a text representation of the type of this image (e.g. '16 bit image')
 	 * @return
@@ -60,6 +56,8 @@ public:
 	virtual unsigned char histogramsAvailable() const = 0;
 	virtual double min() const = 0;
 	virtual double max() const = 0;
+	virtual double mean() const = 0;
+	virtual double stddev() const = 0;
 };
 
 #endif // ABSTRACTIMAGEPROVIDER_H
