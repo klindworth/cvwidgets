@@ -1,4 +1,4 @@
-#include <cvsimpleviewer.h>
+#include <cvio/cvsimpleviewer.h>
 #include "cvsimpleviewerplugin.h"
 
 #include <QtPlugin>

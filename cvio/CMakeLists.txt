@@ -61,7 +61,7 @@ if(BUILD_HDF5_SUPPORT)
     )
 endif()
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 add_definitions(${QT_DEFINITIONS})
 add_definitions(-DQDESIGNER_EXPORT_WIDGETS)
 add_definitions(-DCVWIDGETS_LIBRARY)

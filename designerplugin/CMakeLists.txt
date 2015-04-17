@@ -1,7 +1,7 @@
  
 cmake_minimum_required(VERSION 2.8)
 
-set(PROJECT cvwidgets_designerplugin)
+set(PROJECT cvio_designerplugin)
 project(${PROJECT})
 
 find_package(Qt5Widgets REQUIRED)
@@ -26,7 +26,7 @@ set(HEADERS
 
 
 #I'm not sure every define is necessary
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 add_definitions(-DQT_PLUGIN)
 add_definitions(-DQT_NO_DEBUG)
 add_definitions(-DQT_SHARED)

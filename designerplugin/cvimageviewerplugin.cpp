@@ -1,4 +1,4 @@
-#include <cvimageviewer.h>
+#include <cvio/cvimageviewer.h>
 #include "cvimageviewerplugin.h"
 
 #include <QtPlugin>
