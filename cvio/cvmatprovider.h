@@ -53,6 +53,8 @@ public:
 
 	std::vector<unsigned long> createHistogram(unsigned char number) const;
 	unsigned char histogramsAvailable() const;
+	double min() const;
+	double max() const;
 
 	/**
 	 * @brief createRGBMat Creates a RGB representation of a cv::Mat
@@ -65,5 +67,6 @@ public:
 private:
 	cv::Mat m_mat, m_original;
 	QImage m_image;
+	double m_min, m_max;
 };
 #endif // CVMATPROVIDER_H

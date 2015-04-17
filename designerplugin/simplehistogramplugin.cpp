@@ -32,7 +32,7 @@ QWidget *SimpleHistogramPlugin::createWidget(QWidget *parent)
 	for(int i = 0; i < 100; ++i)
 		bins[i] = rand() % 100;
 	SimpleHistogram* hist = new SimpleHistogram(parent);
-	hist->setData(bins);
+	hist->setData(bins, 0, 100);
 
 	return hist;
 }

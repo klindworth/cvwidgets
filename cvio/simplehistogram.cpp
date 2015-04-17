@@ -13,8 +13,11 @@ SimpleHistogram::SimpleHistogram(QWidget *parent) : QWidget(parent)
 	m_always_zero_as_axis = true;
 }
 
-void SimpleHistogram::setData(const std::vector<BinValue>& bins)
+void SimpleHistogram::setData(const std::vector<BinValue>& bins, double min, double max)
 {
+	m_min_cl = min;
+	m_max_cl = max;
+
 	m_bins = bins;
 	if(!m_bins.empty())
 	{
@@ -98,9 +101,12 @@ void SimpleHistogram::mouseMoveEvent(QMouseEvent *ev)
 		float x = ev->x();
 
 		std::size_t bin_pos = (x+ m_x_per_bin/2) / m_x_per_bin;
+		double cl_width = (m_max_cl - m_min_cl)/m_bins.size();
+		double interval_min = m_min_cl + cl_width*bin_pos;
+		double interval_max = interval_min + cl_width;
 
 		if(bin_pos < m_bins.size())
-			setToolTip("bin: " + QString::number(bin_pos) + ", value: " + QString::number(m_bins[bin_pos]));
+			setToolTip("bin: " + QString::number(bin_pos) + "[" + QString::number(interval_min) + "," + QString::number(interval_max) + ") , value: " + QString::number(m_bins[bin_pos]));
 	}
 	/*int x = ev->x();
 	int idx = getValueIndex(x);

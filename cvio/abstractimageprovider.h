@@ -58,6 +58,8 @@ public:
 
 	virtual std::vector<unsigned long> createHistogram(unsigned char number) const = 0;
 	virtual unsigned char histogramsAvailable() const = 0;
+	virtual double min() const = 0;
+	virtual double max() const = 0;
 };
 
 #endif // ABSTRACTIMAGEPROVIDER_H

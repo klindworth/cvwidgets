@@ -14,7 +14,7 @@ class CV_WIDGET_LIBSHARED_EXPORT SimpleHistogram : public QWidget
 
 public:
 	explicit SimpleHistogram(QWidget *parent = 0);
-	void setData(const std::vector<BinValue>& bins);
+	void setData(const std::vector<BinValue>& bins, double min, double max);
 
 protected:
 	void paintEvent(QPaintEvent*);
@@ -29,6 +29,7 @@ private:
 	BinValue m_min, m_max, m_sum;
 	float m_x_offset, m_y_offset;
 	float m_y_per_val, m_x_per_bin;
+	double m_min_cl, m_max_cl;
 };
 
 #endif // SIMPLEHISTOGRAM_H

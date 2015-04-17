@@ -80,6 +80,8 @@ void CVMatProvider::setCVMat(const cv::Mat &image, bool contrast, bool conversio
 		m_original = image;
 		m_mat = createRGBMat(image, contrast, conversion);
 		m_image = QImage(m_mat.data, m_mat.cols, m_mat.rows, m_mat.step, QImage::Format_RGB888);
+
+		cv::minMaxIdx(m_original, &m_min, &m_max);
 	}
 }
 
@@ -96,10 +98,17 @@ void getChannelText(std::vector<QString>& channeltext, const cv::Mat& image, cv:
 
 QString CVMatProvider::minmax() const
 {
-	double dmin, dmax;
-	cv::minMaxIdx(m_original, &dmin, &dmax);
+	return QString("min: %1, max: %2").arg(min()).arg(max());
+}
 
-	return QString("min: %1, max: %2").arg(dmin).arg(dmax);
+double CVMatProvider::min() const
+{
+	return m_min;
+}
+
+double CVMatProvider::max() const
+{
+	return m_max;
 }
 
 QString CVMatProvider::typeString() const
