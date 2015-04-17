@@ -18,6 +18,8 @@ SimpleHistogram::SimpleHistogram(QWidget *parent) : QWidget(parent)
 void SimpleHistogram::setLogYAxis(bool enable)
 {
 	m_log_y_axis = enable;
+	updateInternals();
+	update();
 }
 
 bool SimpleHistogram::logYAxis() const
@@ -40,9 +42,6 @@ void SimpleHistogram::setData(const std::vector<BinValue>& bins, double min, dou
 		//C++98
 		m_min = *(std::min_element(m_bins.begin(), m_bins.end()));
 		m_max = *(std::max_element(m_bins.begin(), m_bins.end()));
-
-		m_actual_min = transformed_value(m_min);
-		m_actual_max = transformed_value(m_max);
 
 		m_sum = std::accumulate(m_bins.begin(), m_bins.end(), static_cast<BinValue>(0));
 	}
@@ -102,6 +101,9 @@ void SimpleHistogram::updateInternals()
 
 	if(cl_count > 1)
 	{
+		m_actual_min = transformed_value(m_min);
+		m_actual_max = transformed_value(m_max);
+
 		float min_count = m_always_zero_as_axis ? 0 : m_actual_min;
 
 		if(min_count == m_actual_max)
