@@ -30,26 +30,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "imagetablemodel.h"
 
 InfoDialog::InfoDialog(QSharedPointer<AbstractImageProvider>& info, QWidget *parent) :
-	QDialog(parent),
+	QWidget(parent),
 	ui(new Ui::InfoDialog),
 	m_info(info)
 {
 	ui->setupUi(this);
 
+	recreateInformations();
+}
+
+void InfoDialog::recreateInformations()
+{
+	m_model = new ImageTableModel(m_info, this);
 	ui->lblType->setText(m_info->typeString());
 	ui->lblSize->setText(QString("%1x%2").arg(m_info->image().width()).arg(m_info->image().height()));
-	m_model = new ImageTableModel(info);
 	ui->tableView->setModel(m_model);
 	connect(ui->cbBackground, SIGNAL(toggled(bool)), m_model, SLOT(setPixelcolorAsBackground(bool)));
 	connect(ui->cbChannelSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(channelSelected(int)));
 	connect(ui->cbLog, SIGNAL(toggled(bool)), ui->histogram, SLOT(setLogYAxis(bool)));
 
+	ui->cbChannelSelector->clear();
 	std::size_t icount = m_info->channelInformationsCount();
 	for(std::size_t i = 0; i < icount; ++i)
 		ui->cbChannelSelector->addItem(QString("Channel %1").arg(i));
+}
 
-	//ui->lblStat->setText(QString("mean: %1, stddev: %2").arg(m_info->mean()).arg(m_info->stddev()));
-	//ui->lblExtrema->setText(QString("min: %1, max: %2").arg(m_info->min()).arg(m_info->max()));
+void InfoDialog::setImageProvider(QSharedPointer<AbstractImageProvider>& info)
+{
+	m_info = info;
+
+	recreateInformations();
 }
 
 void InfoDialog::channelSelected(int nr)

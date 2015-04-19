@@ -50,8 +50,8 @@ SimpleImageViewer::SimpleImageViewer(QWidget *parent) :
 	QAction *action_save = new QAction(QIcon::fromTheme("document-save-as"), "Save image", this);
 	connect(action_save, SIGNAL(triggered()), this, SLOT(saveImage()));
 
-	QAction *action_original = new QAction(QIcon::fromTheme("document-save-as"), "Save original", this);
-	connect(action_original, SIGNAL(triggered()), this, SLOT(saveOriginal()));
+	//QAction *action_original = new QAction(QIcon::fromTheme("document-save-as"), "Save original", this);
+	//connect(action_original, SIGNAL(triggered()), this, SLOT(saveOriginal()));
 
 	QAction *action_info = new QAction(QIcon::fromTheme("dialog-information"), "Open info dialog", this);
 	connect(action_info, SIGNAL(triggered()), this, SLOT(showInfoDialog()));
@@ -72,7 +72,7 @@ SimpleImageViewer::SimpleImageViewer(QWidget *parent) :
 	this->addAction(action_save);
 	this->addAction(action_info);
 	this->addAction(m_showmarkers);
-	this->addAction(action_original);
+	//this->addAction(action_original);
 
 	this->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
@@ -280,7 +280,7 @@ void SimpleImageViewer::showInfoDialog()
 	if(m_imagesource)
 	{
 		if(m_infodialog.isNull())
-			m_infodialog = QPointer<InfoDialog>(new InfoDialog(m_imagesource, this));
+			m_infodialog = QPointer<InfoDialog>(new InfoDialog(m_imagesource));
 		m_infodialog->show();
 	}
 }

@@ -5,6 +5,12 @@
 namespace cvio
 {
 namespace h5types {
+
+/**
+ * @brief typeid_to_ocv Converts a HDF5 typeid to a OpenCV type
+ * @param d HDF5 typeid
+ * @return OpenCV type
+ */
 int typeid_to_ocv(hid_t d)
 {
 	if(H5Tequal(d, H5T_NATIVE_FLOAT))
@@ -25,6 +31,11 @@ int typeid_to_ocv(hid_t d)
 		throw std::runtime_error("unsupported type");
 }
 
+/**
+ * @brief ocv_to_typeid Converts an OpenCV type to a HDF5 type
+ * @param d OpenCV type
+ * @return HDF5 typeid
+ */
 hid_t ocv_to_typeid(int d)
 {
 	//int d = dataset.depth();
@@ -54,6 +65,11 @@ hid_t value_to_type_id(const std::string& val)
 	return type_id;
 }
 
+/**
+ * @brief typeid_to_string Converts a HDF5 typeid to a string
+ * @param d HDF5 typeid
+ * @return String with the C++ name of type
+ */
 std::string typeid_to_string(hid_t d)
 {
 	if(H5Tequal(d, H5T_NATIVE_FLOAT))

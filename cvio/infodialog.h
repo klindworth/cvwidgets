@@ -26,7 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef INFODIALOG_H
 #define INFODIALOG_H
 
-#include <QDialog>
+#include <QWidget>
 
 #include "cvwidgets_config.h"
 
@@ -37,7 +37,7 @@ namespace Ui {
 class InfoDialog;
 }
 
-class CV_WIDGET_LIBSHARED_EXPORT InfoDialog : public QDialog
+class CV_WIDGET_LIBSHARED_EXPORT InfoDialog : public QWidget
 {
 	Q_OBJECT
 
@@ -46,9 +46,11 @@ public:
 	~InfoDialog();
 
 public slots:
+	void setImageProvider(QSharedPointer<AbstractImageProvider>& info);
 	void scrollTo(int x, int y);
 
 private slots:
+	void recreateInformations();
 	void channelSelected(int nr);
 
 private:
